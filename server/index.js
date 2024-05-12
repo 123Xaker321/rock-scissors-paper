@@ -27,7 +27,55 @@ io.on("connection", (socket) => {
           socket.emit("playersConnected");
         }
       });
-      
+      socket.on("p1Choice", (data) => {
+        let rpsValue = data.rpsValue;
+        rooms[data.roomUniqueId].p1Choice = rpsValue;
+        socket.to(data.roomUniqueId).emit("p1Choice", { rpsValue: data.rpsValue });
+        if (rooms[data.roomUniqueId].p2Choice != null) {
+          declareWinner(data.roomUniqueId);
+        }
+      });
+    
+    
+      socket.on("p2Choice", (data) => {
+        let rpsValue = data.rpsValue;
+        rooms[data.roomUniqueId].p2Choice = rpsValue;
+        socket.to(data.roomUniqueId).emit("p2Choice", { rpsValue: data.rpsValue });
+        if (rooms[data.roomUniqueId].p1Choice != null) {
+          declareWinner(data.roomUniqueId);
+        }
+      });
+      function declareWinner(roomUniqueId) {
+        let p1Choice = rooms[roomUniqueId].p1Choice;
+        let p2Choice = rooms[roomUniqueId].p2Choice;
+        let winner = null;
+        if (p1Choice === p2Choice) {
+            winner = "d";
+        } else if (p1Choice == "Paper") {
+            if (p2Choice == "Scissor") {
+                winner = "p2";
+            } else {
+                winner = "p1";
+            }
+        } else if (p1Choice == "Rock") {
+            if (p2Choice == "Paper") {
+                winner = "p2";
+            } else {
+                winner = "p1";
+            }
+        } else if (p1Choice == "Scissor") {
+            if (p2Choice == "Rock") {
+                winner = "p2";
+            } else {
+                winner = "p1";
+            }
+        }
+        io.sockets.to(roomUniqueId).emit("result", {
+            winner: winner
+        });
+        rooms[roomUniqueId].p1Choice = null;
+        rooms[roomUniqueId].p2Choice = null;
+      }
   });
   
 
