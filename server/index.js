@@ -10,10 +10,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
-    console.log("a user is connected");
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
-    });
     socket.on("createGame", () => {
         const roomUniqueId = makeid(6);
         rooms[roomUniqueId] = {};
@@ -76,6 +72,22 @@ io.on("connection", (socket) => {
         rooms[roomUniqueId].p1Choice = null;
         rooms[roomUniqueId].p2Choice = null;
       }
+      socket.on("p1Clicked", (data) => {
+        rooms[data.roomUniqueId].p1Clicked = true;
+        if (rooms[data.roomUniqueId].p2Clicked != null) {
+          socket.emit("allPlayersClicked");
+        }
+        socket.to(data.roomUniqueId).emit("p1Clicked", { rpsValue: true });
+        
+      });
+      socket.on("p2Clicked", (data) => {
+        rooms[data.roomUniqueId].p2Clicked = true;
+        if (rooms[data.roomUniqueId].p1Clicked != null) {
+          socket.emit("allPlayersClicked");
+        }
+        socket.to(data.roomUniqueId).emit("p2Clicked", { rpsValue: true });
+        
+      });
   });
   
 
@@ -83,10 +95,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '../public/index.html');
-});
-
-app.get('/healthcheck', (req, res) => {
-    res.send('<h1>RPS App running...</h1>');
 });
 
 

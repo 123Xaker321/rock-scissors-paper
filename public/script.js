@@ -84,6 +84,19 @@ socket.on("p2Choice",(data)=>{
         createOpponentChoiceButton(data);
     }
 });
+
+socket.on("p1Clicked",(data)=>{
+  if(!player1) {
+    document.getElementById("player2Choice").innerHTML = '<p id="opponentState">Оппонент натиснув "Продовжити", чи не хочете зіграти ще раз?</p>';
+  }
+});
+
+
+socket.on("p2Clicked",(data)=>{
+  if(player1) {
+    document.getElementById("player2Choice").innerHTML = '<p id="opponentState">Оппонент натиснув "Продовжити", чи не хочете зіграти ще раз?</p>';
+  }
+});
   
 
 socket.on("result",(data)=>{
@@ -104,4 +117,18 @@ socket.on("result",(data)=>{
   document.getElementById('opponentState').style.display = 'none';
   document.getElementById('opponentButton').style.display = 'block';
   document.getElementById('winnerArea').innerHTML = winnerText;
+  document.getElementById("continueButton").style.display = 'block';
 });
+function continueGame(){
+  document.getElementById("player1Choice").innerHTML = `<button class="rock" onclick="sendChoice('Rock')">Rock</button>
+  <button class="paper" onclick="sendChoice('Paper')">Paper</button>
+  <button class="scissor" onclick="sendChoice('Scissor')">Scissors</button>`;
+  const choiceEvent = player1 ? "p1Clicked" : "p2Clicked";
+    socket.emit(choiceEvent, {
+      roomUniqueId: roomUniqueId
+    });
+  document.getElementById("player2Choice").innerHTML = '<p id="opponentState">Чекаємо поки опонент натисне "Продовжити"</p>';
+}
+socket.on("allPlayersClicked", () => {
+  document.getElementById("player2Choice").innerHTML = '<p id="opponentState"></p>';
+})
