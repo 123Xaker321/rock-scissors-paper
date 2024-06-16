@@ -4,43 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors</title>
+    <title>Камень - Ножницы - Бумага</title>
     <link rel="stylesheet" href="./style.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="./script.js"></script>
     
 </head>
 <body>
-    <h1>Rock Paper Scissors</h1>
+    <h1>Камень - Ножницы - Бумага</h1>
     <div id="initial">
-        <button onclick="createGame()">Create Game</button>
-        <div>or</div>
-        <input  placeholder="Enter Code" type="text" name="" id="roomUniqueId" />
-        <button onclick="joinGame()">Join Game</button>
+        <button class="glow-on-hover" id="createGameButton" onclick="createGame()">Новая игра</button>
+        <div id="or">или</div>
+            <input  placeholder="Введите код" type="text" name="" id="roomUniqueId" />
+            <button class="glow-on-hover" onclick="joinGame()">Присоединиться к существующей</button>
+       
     </div>
-    <div id="gamePlay" class="container">
+    <div id="gamePlay" style="display: none;" class="container">
         <div id="waitingArea" >
 
 
         </div>
         <div id="gameArea" style="display: none;">
-            You:
+            Ваш выбор:
             <div id="player1Choice">
-               <button class="rock" onclick="sendChoice('Rock')">Rock</button>
-               <button class="paper" onclick="sendChoice('Paper')">Paper</button>
-               <button class="scissor" onclick="sendChoice('Scissor')">Scissors</button>
+               <button class="rock glow-on-hover" onclick="sendChoice('Камень')">Камень</button>
+               <button class="paper glow-on-hover" onclick="sendChoice('Бумага')">Ножницы</button>
+               <button class="scissor glow-on-hover" onclick="sendChoice('Ножницы')">Бумага</button>
              </div>
          </div>
-         Opponent:
+         Оппонент:
          <div id="player2Choice">
-             <p id="opponentState">Waiting for Opponent</p>
+             <p id="opponentState">Ожидаем оппонента</p>
          </div>
       
         <div id="winnerArea">
 
 
         </div>
-        <button id="continueButton" style="display: none;" onclick="continueGame()">Продовжити</button>
+        <button id="continueButton" class="glow-on-hover" style="display: none;" onclick="continueGame()">Продолжить</button>
     </div>
 
 

@@ -71,11 +71,14 @@ io.on("connection", (socket) => {
         });
         rooms[roomUniqueId].p1Choice = null;
         rooms[roomUniqueId].p2Choice = null;
+        rooms[roomUniqueId].p1Clicked = null;
+        rooms[roomUniqueId].p2Clicked = null;
       }
       socket.on("p1Clicked", (data) => {
         rooms[data.roomUniqueId].p1Clicked = true;
         if (rooms[data.roomUniqueId].p2Clicked != null) {
           socket.emit("allPlayersClicked");
+          socket.to(data.roomUniqueId).emit("allPlayersClicked");
         }
         socket.to(data.roomUniqueId).emit("p1Clicked", { rpsValue: true });
         
@@ -84,6 +87,7 @@ io.on("connection", (socket) => {
         rooms[data.roomUniqueId].p2Clicked = true;
         if (rooms[data.roomUniqueId].p1Clicked != null) {
           socket.emit("allPlayersClicked");
+          socket.to(data.roomUniqueId).emit("allPlayersClicked");
         }
         socket.to(data.roomUniqueId).emit("p2Clicked", { rpsValue: true });
         
